@@ -8,7 +8,6 @@ const ManageProduct = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch flowers from the backend API
     fetch('/api/flowers')
       .then(response => {
         if (!response.ok) {
@@ -27,16 +26,12 @@ const ManageProduct = () => {
       });
   }, []);
 
-  // Handle delete flower with confirmation
   const handleDelete = (flowerId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this flower?');
     
     if (confirmDelete) {
-      // Remove from state (UI)
-      const updatedFlowers = flowers.filter((flower) => flower.id !== flowerId);
-      setFlowers(updatedFlowers);
+      setFlowers(prevFlowers => prevFlowers.filter((flower) => flower.id !== flowerId));
 
-      // Delete from database using backend API call
       fetch(`/api/delete-flower/${flowerId}`, { method: 'DELETE' })
         .then(response => {
           if (!response.ok) {
@@ -50,86 +45,89 @@ const ManageProduct = () => {
     }
   };
 
-  // CSS styles
   const styles = {
     container: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '2rem',
-      backgroundColor: '#E8F0FE', // Light blue background
-      height: '100vh',
+      padding: '3rem',
+      backgroundColor: 'lightblue',
+      minHeight: '100vh',
       fontFamily: 'Arial, sans-serif',
     },
     header: {
       textAlign: 'center',
-      marginBottom: '2rem',
+      marginBottom: '3rem',
+      color: '#2C3E50',
     },
     h1: {
-      fontSize: '2.5rem',
-      color: '#333',
-      margin: '0',
+      fontSize: '3rem',
+      fontWeight: 'bold',
+      margin: 0,
+      textTransform: 'uppercase',
     },
     loading: {
-      fontSize: '1.5rem',
-      color: '#007BFF',
+      fontSize: '2rem',
+      color: '#3498DB',
     },
     error: {
-      color: '#dc3545',
-      fontSize: '1.2rem',
+      color: '#E74C3C',
+      fontSize: '1.5rem',
     },
-    productList: {
-      width: '100%',
-      maxWidth: '800px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1.5rem',
+    flowerGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)', // 3 products per row
+      gap: '30px',
+      padding: '0 10px',
     },
-    productCard: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '1rem',
+    flowerCard: {
       border: '1px solid #ddd',
-      borderRadius: '8px',
+      borderRadius: '12px',
+      padding: '20px',
+      textAlign: 'center',
       backgroundColor: '#fff',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      transition: 'transform 0.2s',
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.1)',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
       position: 'relative',
+      overflow: 'hidden',
+      cursor: 'pointer',
     },
-    productCardHover: {
-      transform: 'scale(1.02)',
+    flowerCardHover: {
+      transform: 'scale(1.05)',
+      boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)',
     },
-    productInfo: {
-      display: 'flex',
-      flexDirection: 'column',
-      flex: 1,
+    flowerImage: {
+      width: '100%',
+      height: '250px',
+      objectFit: 'cover',
+      borderRadius: '10px',
+      marginBottom: '15px',
+      transition: 'transform 0.3s ease',
+    },
+    flowerImageHover: {
+      transform: 'scale(1.1)', // Slight zoom effect
     },
     productName: {
-      fontSize: '1.8rem',
-      marginBottom: '0.5rem',
+      fontSize: '1.6rem',
       fontWeight: 'bold',
+      marginBottom: '10px',
+      color: '#2C3E50',
+      transition: 'color 0.3s ease',
     },
     productPrice: {
-      fontSize: '1.5rem',
-      color: '#666',
-    },
-    productImage: {
-      width: '120px',
-      height: '120px',
-      objectFit: 'cover',
-      borderRadius: '8px',
-      marginRight: '1rem',
-      border: '2px solid #007BFF',
+      fontSize: '1.3rem',
+      color: '#95A5A6',
     },
     buttonGroup: {
       display: 'flex',
+      justifyContent: 'center',
       gap: '1rem',
+      marginTop: '20px',
     },
     button: {
-      padding: '0.8rem 1.2rem',
-      backgroundColor: '#007BFF',
+      padding: '12px 20px',
+      backgroundColor: '#3498DB',
       color: 'white',
       border: 'none',
       borderRadius: '5px',
@@ -141,12 +139,21 @@ const ManageProduct = () => {
       gap: '0.5rem',
     },
     deleteButton: {
-      backgroundColor: '#dc3545',
+      backgroundColor: '#E74C3C',
     },
     buttonHover: {
-      transform: 'scale(1.05)',
+      backgroundColor: '#2980B9',
+    },
+    flowerCardWrapper: {
+      transition: 'transform 0.3s ease-in-out',
     },
   };
+
+  const LoadingSpinner = () => (
+    <div className="spinner" style={styles.loading}>
+      Loading...
+    </div>
+  );
 
   return (
     <div style={styles.container}>
@@ -154,32 +161,50 @@ const ManageProduct = () => {
         <h1 style={styles.h1}>Manage Flowers</h1>
       </div>
 
-      {loading && <div style={styles.loading}>Loading flowers...</div>}
+      {loading && <LoadingSpinner />}
       {error && <div style={styles.error}>{error}</div>}
 
-      <div style={styles.productList}>
+      <div style={styles.flowerGrid}>
         {flowers.map((flower) => (
           <div
             key={flower.id}
-            style={styles.productCard}
+            style={styles.flowerCardWrapper}
+            onMouseEnter={(e) => {
+              e.currentTarget.querySelector('img').style.transform = 'scale(0.9)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.querySelector('img').style.transform = 'scale(1)';
+            }}
           >
-            <img src={flower.image_url} alt={flower.name} style={styles.productImage} />
-            <div style={styles.productInfo}>
-              <span style={styles.productName}>{flower.name}</span>
-              <span style={styles.productPrice}>Price: {flower.price}</span>
-            </div>
-            <div style={styles.buttonGroup}>
-              <Link to={`/edit-flower/${flower.id}`}>
-                <button style={styles.button}>
-                  <FaEdit /> Edit
+            <div
+              style={{ ...styles.flowerCard, '&:hover': styles.flowerCardHover }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              <img src={flower.image_url} alt={flower.name} style={styles.flowerImage} />
+              <div>
+                <div style={styles.productName}>{flower.name}</div>
+                <div style={styles.productPrice}>Price: {flower.price}</div>
+              </div>
+              <div style={styles.buttonGroup}>
+                <Link to={`/edit-flower/${flower.id}`}>
+                  <button style={styles.button}>
+                    <FaEdit /> Edit
+                  </button>
+                </Link>
+                <button
+                  style={{ ...styles.button, ...styles.deleteButton }}
+                  onClick={() => handleDelete(flower.id)}
+                >
+                  <FaTrashAlt /> Delete
                 </button>
-              </Link>
-              <button
-                style={{ ...styles.button, ...styles.deleteButton }}
-                onClick={() => handleDelete(flower.id)}
-              >
-                <FaTrashAlt /> Delete
-              </button>
+              </div>
             </div>
           </div>
         ))}

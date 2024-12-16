@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSignInAlt } from 'react-icons/fa';
+import { FaSignInAlt, FaEnvelope, FaLock } from 'react-icons/fa';
 import axios from 'axios';
+import lavender from '../Images/lavender.jpg';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -22,61 +23,60 @@ const LoginPage = () => {
         password: formData.password,
       });
 
-      console.log('Response:', response.data);
-
       if (response.data.message === 'Admin login successful') {
         setIsSubmitted(true);
-        alert('Admin login successful');  // Alert message for admin
+        alert('Admin login successful');
         navigate('/admin-homepage');
       } else if (response.data.message === 'User login successful') {
         setIsSubmitted(true);
-        alert('User login successful');  // Alert message for user
-        navigate('/');
+        alert('User login successful');
+        navigate('/home');
       }
     } catch (error) {
-      console.error('Error during login:', error.response ? error.response.data : error.message);
       setError('Invalid credentials. Please try again.');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2 className="login-header"><FaSignInAlt /> Login</h2>
-      {error && <p className="error-message">{error}</p>}
-      {isSubmitted ? (
-        <div className="welcome-message">
-          <h3>Welcome back!</h3>
-          <p>You have successfully logged in.</p>
-        </div>
-      ) : (
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label>
-            Email:
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Your Email"
-              required
-              autoComplete="email"
-            />
-          </label>
-          <label>
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              placeholder="Your Password"
-              required
-              autoComplete="current-password"
-            />
-          </label>
-          <button type="submit" className="submit-btn">Login</button>
-        </form>
-      )}
+    <div className="login-page">
+      <div className="login-container">
+        <h2 className="login-header"><FaSignInAlt /> Login</h2>
+        {error && <p className="error-message">{error}</p>}
+        {isSubmitted ? (
+          <div className="welcome-message">
+            <h3>Welcome back!</h3>
+            <p>You have successfully logged in.</p>
+          </div>
+        ) : (
+          <form className="login-form" onSubmit={handleSubmit}>
+            <label>
+              <FaEnvelope className="icon" /> Email:
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Your Email"
+                required
+                autoComplete="email"
+              />
+            </label>
+            <label>
+              <FaLock className="icon" /> Password:
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Your Password"
+                required
+                autoComplete="current-password"
+              />
+            </label>
+            <button type="submit" className="submit-btn">Login</button>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
@@ -85,11 +85,21 @@ export default LoginPage;
 
 // CSS Styling in the same file
 const loginCss = `
-         .login-container {
+  .login-page {
+    background-image: url(${lavender});
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-container {
+    width: 100%;
     max-width: 400px;
-    margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -99,19 +109,32 @@ const loginCss = `
     font-size: 24px;
     color: #4CAF50;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-header .icon {
+    margin-right: 10px;
   }
 
   .login-form label {
-    display: block;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
     font-size: 16px;
     color: #555;
   }
 
+  .login-form .icon {
+    margin-right: 10px;
+    color: #007bff;
+  }
+
   .login-form input {
-    width: 90%;
+    flex: 1;
     padding: 10px;
-    margin: 5px 0 20px 0;
+    margin-left: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
@@ -125,6 +148,7 @@ const loginCss = `
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s ease;
   }
 
   .submit-btn:hover {
@@ -141,7 +165,7 @@ const loginCss = `
     text-align: center;
     margin-bottom: 15px;
   }
-`; // Keep your existing CSS styling here
+`;
 
 // Inject CSS to the document's head
 const styleSheetLogin = document.createElement("style");

@@ -1,5 +1,7 @@
+// AdminHomepage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaClipboardList, FaProductHunt } from 'react-icons/fa';
 
 const AdminHomepage = () => {
   const styles = {
@@ -7,7 +9,7 @@ const AdminHomepage = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       padding: '2rem',
       backgroundColor: '#f5f5f5',
       height: '100vh',
@@ -25,46 +27,32 @@ const AdminHomepage = () => {
       fontSize: '1.2rem',
       color: '#666',
     },
-    actions: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1.5rem',
-      alignItems: 'center',
+    dashboard: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+      gap: '2rem',
+      width: '100%',
+      maxWidth: '800px',
     },
-    section: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      marginBottom: '2rem',
+    card: {
+      backgroundColor: '#fff',
+      padding: '1.5rem',
+      borderRadius: '10px',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+      textAlign: 'center',
+      transition: 'transform 0.2s, box-shadow 0.2s',
+      cursor: 'pointer',
     },
-    sectionTitle: {
-      fontSize: '1.8rem',
+    icon: {
+      fontSize: '2.5rem',
       marginBottom: '1rem',
       color: '#007BFF',
     },
-    buttonGroup: {
-      display: 'flex',
-      gap: '1.5rem',
-    },
-    button: {
-      padding: '1rem 2rem',
-      backgroundColor: '#007BFF',
-      color: 'white',
-      border: 'none',
-      borderRadius: '5px',
-      fontSize: '1.1rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-    },
-    buttonHover: {
-      backgroundColor: '#0056b3',
-    },
-    buttonActive: {
-      backgroundColor: '#003f7f',
-    },
-    mobileButton: {
-      width: '100%',
-      maxWidth: '300px',
+    link: {
+      textDecoration: 'none',
+      color: '#007BFF',
+      fontSize: '1.2rem',
+      fontWeight: 'bold',
     },
   };
 
@@ -72,31 +60,24 @@ const AdminHomepage = () => {
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.h1}>Welcome, Admin</h1>
-        <p style={styles.p}>This is the admin dashboard where you can manage users, products, and more.</p>
+        <p style={styles.p}>Manage your orders and products efficiently.</p>
       </div>
 
-      <div style={styles.actions}>
-        {/* Manage Users Section */}
-        <Link to="/manage-users">
-          <button style={styles.button}>Manage Users</button>
-        </Link>
-
+      <div style={styles.dashboard}>
         {/* Orders Section */}
-        <Link to="/orders">
-          <button style={styles.button}>Orders</button>
+        <Link to="/orders" style={styles.link}>
+          <div style={styles.card}>
+            <FaClipboardList style={styles.icon} />
+            <h3>View Orders</h3>
+          </div>
         </Link>
 
         {/* Products Section */}
-        <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>Products</h2>
-          <div style={styles.buttonGroup}>
-            <Link to="/add-flower">
-              <button style={styles.button}>Add Product</button>
-            </Link>
-            <Link to="/manage-product">
-              <button style={styles.button}>Manage Products</button>
-            </Link>
-          </div>
+        <div style={styles.card}>
+          <FaProductHunt style={styles.icon} />
+          <Link to="/add-flower" style={styles.link}>Add Product</Link>
+          <br />
+          <Link to="/manage-product" style={styles.link}>Manage Products</Link>
         </div>
       </div>
     </div>
